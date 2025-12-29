@@ -2,14 +2,14 @@ name: test
 
 on:
   push:
-    branches: [ main ]
+    branches: [ master ]
     paths:
       - '**.yml'
       - '**.go'
       - '**.mod'
       - '**.sum'
   pull_request:
-    branches: [ main ]
+    branches: [ master ]
     paths:
       - '**.yml'
       - '**.go'
