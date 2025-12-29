@@ -1,4 +1,4 @@
-一个为epub提供了若干API的书源服务，添加到[阅读](https://github.com/gedoor/legado)书源中。
+一个为epub提供了若干API的书源服务，可添加到[阅读](https://github.com/gedoor/legado)书源中。
 
 启动：
 ```
