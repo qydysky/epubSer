@@ -1,0 +1,41 @@
+[
+    {
+        "bookSourceGroup": "",
+        "bookSourceName": "xx源",
+        "bookSourceType": 0,
+        "bookSourceUrl": "http://xxx:10005/",
+        "customOrder": 0,
+        "enabled": true,
+        "enabledCookieJar": true,
+        "enabledExplore": false,
+        "header": "",
+        "ruleBookInfo": {
+            "author": "$.author",
+            "coverUrl": "/content/{$.baseUrl}/{$.coverUrl}",
+            "intro": "$.intro",
+            "name": "$.name",
+            "tocUrl": "/chapter/{$.baseUrl}"
+        },
+        "ruleContent": {
+            "content": "tag.body@all",
+            "imageStyle": "",
+            "title": "tag.h1@text&&tag.h2@text"
+        },
+        "ruleExplore": {},
+        "ruleSearch": {
+            "author": "$.author",
+            "bookList": "$.list",
+            "bookUrl": "/info/{$.baseUrl}",
+            "coverUrl": "/content/{$.baseUrl}/{$.coverUrl}",
+            "intro": "$.intro",
+            "name": "$.name"
+        },
+        "ruleToc": {
+            "chapterList": "$.chapters",
+            "chapterName": "$.title",
+            "chapterUrl": "/content/{$.baseUrl}/{$.content.url}"
+        },
+        "searchUrl": "/search/{{key}}",
+        "weight": 0
+    }
+]

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package version="2.0" unique-identifier="duokan-book-id" xmlns="http://www.idpf.org/2007/opf" xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <metadata xmlns:opf="http://www.idpf.org/2007/opf">
+    <dc:identifier id="duokan-book-id" opf:scheme="UUID" xmlns:opf="http://www.idpf.org/2007/opf">eedc4e95-d94c-4417-bc28-ef79629abedc</dc:identifier>
+    <dc:title>末日：我打造无限列车</dc:title>
+    <dc:description>当天灾肆虐，极寒、风暴无尽蔓延……当全球异变，丧尸如潮，诡异凶现……当末日降临，世界各地开始出现直径数百公里的吞噬星渊……当人们抬头看向大气云层中，那缓缓出现的邪神巨尸……自那天起，人们开始发现，每天天亮的时间开始变得更晚，直到太阳不再升起，迎来的将会是无尽的极夜。    为了生存，那一天，末日电台向世人发出最后通报所有人，向东方，逃出黎明！    ……林现觉醒「机械之心」异能，可以吞噬机械获得各种神秘技能，还能扫描机械获得蓝图进行机械制造，甚至可以用意念对各种机械进行共态驱动。    于是他找到了一台200吨的重型燃气机车，牵引着特殊改造的储物、种植、生产、医疗、生活车厢，踏上了长达32万公里的环星轨道之旅，向着东方一路冲驰！</dc:description>
+    <dc:publisher>Legado</dc:publisher>
+    <dc:creator opf:role="aut" opf:file-as="不二可乐, " xmlns:opf="http://www.idpf.org/2007/opf">不二可乐</dc:creator>
+    <dc:date opf:event="creation" xmlns:opf="http://www.idpf.org/2007/opf">2025-12-28</dc:date>
+    <dc:language>zh</dc:language>
+    <meta name="cover" content="cover_jpg"/>
+    <meta name="generator" content="Ag2S EpubLib"/>
+    <meta name="duokan-body-font" content="DK-SONGTI"/>
+    <meta name="Sigil version" content="2.4.2"/>
+    <dc:date opf:event="modification" xmlns:opf="http://www.idpf.org/2007/opf">2025-12-28</dc:date>
+  </metadata>
+</package>
