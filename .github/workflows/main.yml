@@ -78,7 +78,7 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: windows_go${{ matrix.go }}.zip
-        path: ./main
+        path: ./main.exe
        
   mac-build:
     name: build_macos_go${{ matrix.go }}
