@@ -1,0 +1,132 @@
+name: Release
+
+on:
+  pull_request:
+    branches: [ master ]
+      - '**.yml'
+      - '**.go'
+      - '**.mod'
+      - '**.sum'
+
+jobs:
+  buildtest:
+    name: test_ubuntu_go
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        go: [ '1.25' ]
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+    - name: Create draft release
+      run: |
+        gh release create draft --draft
+
+  u-build:
+    name: build_ubuntu_go
+    needs: [buildtest]
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        go: [ '1.25' ]
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+    - name: Set up Go${{ matrix.go }}
+      uses: actions/setup-go@v5
+      with:
+        go-version: ${{ matrix.go }}
+
+    - name: Check out code
+      uses: actions/checkout@v4
+      with:
+        lfs: true
+
+    - name: Checkout LFS objects
+      run: git lfs checkout
+
+    - name: Build
+      run: |
+        go get .
+        CGO_ENABLED=0 go build -pgo=auto -v -buildmode=exe main.go
+      
+    - name: zip
+      run: zip -q -r ubuntu_go${{ matrix.go }}.zip main
+
+    - name: Upload a Release Asset
+      run: |
+        gh release upload draft ubuntu_go${{ matrix.go }}.zip
+
+  w-build:
+    name: build_windows_go
+    needs: [buildtest]
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        go: [ '1.25' ]
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+    - name: Set up Go${{ matrix.go }}
+      uses: actions/setup-go@v5
+      with:
+        go-version: ${{ matrix.go }}
+
+    - name: Check out code
+      uses: actions/checkout@v4
+      with:
+        lfs: true
+
+    - name: Checkout LFS objects
+      run: git lfs checkout
+
+
+    - name: Build
+      run: |
+        go get .
+        set CGO_ENABLED=0
+        go build -pgo=auto -v -buildmode=exe main.go
+        
+    - name: zip
+      run: .\7za.exe a -r .\windows_go${{ matrix.go }}.zip ./main.exe
+
+    - name: Upload a Release Asset
+      run: |
+        gh release upload draft windows_go${{ matrix.go }}.zip
+
+  m-build:
+    name: build_macos_go
+    needs: [buildtest]
+    runs-on: macos-latest
+    strategy:
+      matrix:
+        go: [ '1.25' ]
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+    - name: Set up Go${{ matrix.go }}
+      uses: actions/setup-go@v5
+      with:
+        go-version: ${{ matrix.go }}
+
+    - name: Check out code
+      uses: actions/checkout@v4
+      with:
+        lfs: true
+
+    - name: Checkout LFS objects
+      run: git lfs checkout
+
+
+    - name: Build
+      run: |
+        go get .
+        set CGO_ENABLED=0
+        go build -pgo=auto -v -buildmode=exe main.go
+        
+    - name: zip
+      run: zip -q -r macos_go${{ matrix.go }}.zip main
+
+    - name: Upload a Release Asset
+      run: |
+        gh release upload draft macos_go${{ matrix.go }}.zip
