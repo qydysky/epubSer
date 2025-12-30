@@ -2,6 +2,7 @@ package main
 
 import (
 	"archive/zip"
+	"compress/gzip"
 	_ "embed"
 	"encoding/json"
 	"encoding/xml"
@@ -75,8 +76,9 @@ type Meta struct {
 	Content string `xml:"content,attr" json:"-"`
 }
 type Manifest struct {
-	Id   string `xml:"id,attr" json:"-"`
-	Href string `xml:"href,attr" json:"-"`
+	Id        string `xml:"id,attr" json:"-"`
+	Href      string `xml:"href,attr" json:"-"`
+	MediaType string `xml:"media-type,attr" json:"-"`
 }
 type Opf struct {
 	BaseUrl     string     `json:"baseUrl,omitempty"`
@@ -139,7 +141,10 @@ func search(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusServiceUnavailable)
 	} else {
 		w.Header().Set("Content-Type", "application/json")
-		if _, e := w.Write(data); e != nil {
+		w.Header().Set("Content-Encoding", "gzip")
+		gzipw := gzip.NewWriter(w)
+		defer gzipw.Close()
+		if _, e := gzipw.Write(data); e != nil {
 			fmt.Println(e)
 			w.WriteHeader(http.StatusServiceUnavailable)
 		}
@@ -187,7 +192,10 @@ func info(w http.ResponseWriter, r *http.Request) {
 					w.WriteHeader(http.StatusServiceUnavailable)
 				} else {
 					w.Header().Set("Content-Type", "application/json")
-					if _, e := w.Write(data); e != nil {
+					w.Header().Set("Content-Encoding", "gzip")
+					gzipw := gzip.NewWriter(w)
+					defer gzipw.Close()
+					if _, e := gzipw.Write(data); e != nil {
 						fmt.Println(e)
 						w.WriteHeader(http.StatusServiceUnavailable)
 					}
@@ -241,7 +249,10 @@ func chapter(w http.ResponseWriter, r *http.Request) {
 					w.WriteHeader(http.StatusServiceUnavailable)
 				} else {
 					w.Header().Set("Content-Type", "application/json")
-					if _, e := w.Write(data); e != nil {
+					w.Header().Set("Content-Encoding", "gzip")
+					gzipw := gzip.NewWriter(w)
+					defer gzipw.Close()
+					if _, e := gzipw.Write(data); e != nil {
 						fmt.Println(e)
 						w.WriteHeader(http.StatusServiceUnavailable)
 					}
@@ -271,11 +282,25 @@ func content(w http.ResponseWriter, r *http.Request) {
 			fmt.Println(e)
 			w.WriteHeader(http.StatusServiceUnavailable)
 		} else {
-			if opfF, e := rc.Open("OEBPS" + content); e != nil {
+			if c, e := rc.Open("OEBPS" + content); e != nil {
 				fmt.Println(e)
 				w.WriteHeader(http.StatusServiceUnavailable)
 			} else {
-				_, _ = io.Copy(w, opfF)
+				if opfF, e := rc.Open("OEBPS/content.opf"); e == nil {
+					var opf = Opf{}
+					if e := xml.NewDecoder(opfF).Decode(&opf); e == nil {
+						if _, coverManifest := ps.Search(opf.Manifest, func(t *Manifest) bool {
+							return "/"+t.Href == content
+						}); coverManifest != nil {
+							w.Header().Set("Content-Type", coverManifest.MediaType)
+						}
+					}
+				}
+
+				w.Header().Set("Content-Encoding", "gzip")
+				gzipw := gzip.NewWriter(w)
+				defer gzipw.Close()
+				_, _ = io.Copy(gzipw, c)
 			}
 		}
 	}
@@ -286,7 +311,10 @@ func booksource(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
-	_, _ = w.Write(booksourceJson)
+	w.Header().Set("Content-Encoding", "gzip")
+	gzipw := gzip.NewWriter(w)
+	defer gzipw.Close()
+	_, _ = gzipw.Write(booksourceJson)
 }
 
 func parseBaseContent(method string, u *url.URL) (base, content string) {
