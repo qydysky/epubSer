@@ -20,6 +20,18 @@ jobs:
     env:
       GH_TOKEN: ${{ github.token }}
     steps:
+    - name: Set up Go${{ matrix.go }}
+      uses: actions/setup-go@v5
+      with:
+        go-version: ${{ matrix.go }}
+
+    - name: Check out code
+      uses: actions/checkout@v4
+      with:
+        lfs: true
+
+    - name: Checkout LFS objects
+      run: git lfs checkout
     - name: Create draft release
       run: |
         gh release create draft --draft
