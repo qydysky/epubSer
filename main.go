@@ -141,9 +141,8 @@ func search(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusServiceUnavailable)
 	} else {
 		w.Header().Set("Content-Type", "application/json")
-		w.Header().Set("Content-Encoding", "gzip")
-		gzipw := gzip.NewWriter(w)
-		defer gzipw.Close()
+		gzipw, cf := gzipEncode(w, r)
+		defer cf()
 		if _, e := gzipw.Write(data); e != nil {
 			fmt.Println(e)
 			w.WriteHeader(http.StatusServiceUnavailable)
@@ -192,9 +191,8 @@ func info(w http.ResponseWriter, r *http.Request) {
 					w.WriteHeader(http.StatusServiceUnavailable)
 				} else {
 					w.Header().Set("Content-Type", "application/json")
-					w.Header().Set("Content-Encoding", "gzip")
-					gzipw := gzip.NewWriter(w)
-					defer gzipw.Close()
+					gzipw, cf := gzipEncode(w, r)
+					defer cf()
 					if _, e := gzipw.Write(data); e != nil {
 						fmt.Println(e)
 						w.WriteHeader(http.StatusServiceUnavailable)
@@ -249,9 +247,8 @@ func chapter(w http.ResponseWriter, r *http.Request) {
 					w.WriteHeader(http.StatusServiceUnavailable)
 				} else {
 					w.Header().Set("Content-Type", "application/json")
-					w.Header().Set("Content-Encoding", "gzip")
-					gzipw := gzip.NewWriter(w)
-					defer gzipw.Close()
+					gzipw, cf := gzipEncode(w, r)
+					defer cf()
 					if _, e := gzipw.Write(data); e != nil {
 						fmt.Println(e)
 						w.WriteHeader(http.StatusServiceUnavailable)
@@ -297,9 +294,8 @@ func content(w http.ResponseWriter, r *http.Request) {
 					}
 				}
 
-				w.Header().Set("Content-Encoding", "gzip")
-				gzipw := gzip.NewWriter(w)
-				defer gzipw.Close()
+				gzipw, cf := gzipEncode(w, r)
+				defer cf()
 				_, _ = io.Copy(gzipw, c)
 			}
 		}
@@ -311,9 +307,8 @@ func booksource(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
-	w.Header().Set("Content-Encoding", "gzip")
-	gzipw := gzip.NewWriter(w)
-	defer gzipw.Close()
+	gzipw, cf := gzipEncode(w, r)
+	defer cf()
 	_, _ = gzipw.Write(booksourceJson)
 }
 
@@ -322,6 +317,14 @@ func parseBaseContent(method string, u *url.URL) (base, content string) {
 	if len(basecontent) != 2 {
 		return
 	}
-
 	return basecontent[0], basecontent[1]
+}
+
+func gzipEncode(w http.ResponseWriter, r *http.Request) (wf io.Writer, cf func() error) {
+	if strings.Contains(r.Header.Get("Accept-Encoding"), "gzip") {
+		w.Header().Set("Content-Encoding", "gzip")
+		gw := gzip.NewWriter(w)
+		return gw, gw.Close
+	}
+	return w, func() error { return nil }
 }
