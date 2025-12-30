@@ -3,6 +3,7 @@ name: Release
 on:
   pull_request:
     branches: [ master ]
+    paths:
       - '**.yml'
       - '**.go'
       - '**.mod'
