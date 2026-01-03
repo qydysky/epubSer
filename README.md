@@ -1,4 +1,4 @@
-一个为epub提供了若干API的轻量级书源服务，可添加到[阅读](https://github.com/gedoor/legado)书源中，为阅读导出的epub找个家。
+一个为epub提供了若干API的轻量级书源服务，可添加到[阅读](https://github.com/gedoor/legado)书源中。
 
 启动：
 ```
