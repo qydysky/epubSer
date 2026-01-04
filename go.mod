@@ -2,14 +2,16 @@ module github.com/qydysky/epubSer
 
 go 1.25.4
 
-require github.com/qydysky/part v0.28.20251229180712
+require github.com/qydysky/part v0.28.20260104194352
 
 require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/dustin/go-humanize v1.0.1 // indirect
 	github.com/go-ole/go-ole v1.3.0 // indirect
 	github.com/google/uuid v1.6.0 // indirect
+	github.com/klauspost/compress v1.18.2 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
+	github.com/qydysky/brotli v0.0.0-20250531004300-54adcf96cc4a // indirect
 	github.com/shirou/gopsutil v3.21.11+incompatible // indirect
 	github.com/tklauser/go-sysconf v0.3.16 // indirect
 	github.com/tklauser/numcpus v0.11.0 // indirect

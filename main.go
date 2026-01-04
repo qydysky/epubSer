@@ -2,6 +2,7 @@ package main
 
 import (
 	"archive/zip"
+	"bytes"
 	"compress/gzip"
 	_ "embed"
 	"encoding/json"
@@ -9,6 +10,7 @@ import (
 	"flag"
 	"fmt"
 	"io"
+	"iter"
 	"net/http"
 	"net/url"
 	"os"
@@ -19,6 +21,7 @@ import (
 	pf "github.com/qydysky/part/file"
 	ps "github.com/qydysky/part/slice"
 	pweb "github.com/qydysky/part/web"
+	pxml "github.com/qydysky/part/xml"
 )
 
 var (
@@ -283,20 +286,34 @@ func content(w http.ResponseWriter, r *http.Request) {
 				fmt.Println(e)
 				w.WriteHeader(http.StatusServiceUnavailable)
 			} else {
+				gzipw, cf := gzipEncode(w, r)
+				defer cf()
+
 				if opfF, e := rc.Open("OEBPS/content.opf"); e == nil {
 					var opf = Opf{}
 					if e := xml.NewDecoder(opfF).Decode(&opf); e == nil {
 						if _, coverManifest := ps.Search(opf.Manifest, func(t *Manifest) bool {
 							return "/"+t.Href == content
 						}); coverManifest != nil {
-							w.Header().Set("Content-Type", coverManifest.MediaType)
+							if format := r.URL.Query().Get("format"); format == "json" && coverManifest.MediaType == "application/xhtml+xml" {
+								xmlf := pxml.NewDecoder(c)
+								var jsonC struct {
+									Header string `json:"header"`
+									Body   string `json:"body"`
+								}
+								jsonC.Header, jsonC.Body = getJsonContent(xmlf)
+								if data, e := json.Marshal(jsonC); e == nil {
+									w.Header().Set("Content-Type", "application/json")
+									_, _ = gzipw.Write(data)
+								}
+							} else {
+								w.Header().Set("Content-Type", coverManifest.MediaType)
+								_, _ = io.Copy(gzipw, c)
+							}
 						}
 					}
 				}
 
-				gzipw, cf := gzipEncode(w, r)
-				defer cf()
-				_, _ = io.Copy(gzipw, c)
 			}
 		}
 	}
@@ -327,4 +344,36 @@ func gzipEncode(w http.ResponseWriter, r *http.Request) (wf io.Writer, cf func()
 		return gw, gw.Close
 	}
 	return w, func() error { return nil }
+}
+
+func getJsonContent(i iter.Seq[*pxml.Node]) (header, body string) {
+	var title byte
+	var bodyA bool
+	for line := range i {
+		if len(line.Name) == 3 && line.Name[0] == '/' && line.Name[1] == 'h' && line.Name[2] == title {
+			title = 0
+		}
+		if len(line.Name) == 2 && line.Name[0] == 'h' && line.Name[1] >= '1' && line.Name[1] <= '9' {
+			title = line.Name[1]
+		}
+		if title != 0 {
+			if b := bytes.TrimSpace(line.Inner); len(b) == 0 {
+				if len(header) != 0 && !strings.HasSuffix(header, " ") {
+					header += " "
+				}
+			} else {
+				header += string(b)
+			}
+		}
+		if bytes.Equal(line.Name, []byte("/p")) || bytes.Equal(line.Name, []byte("/div")) {
+			bodyA = false
+		}
+		if bytes.Equal(line.Name, []byte("p")) || bytes.Equal(line.Name, []byte("div")) {
+			bodyA = true
+		}
+		if bodyA && len(bytes.TrimSpace(line.Inner)) > 0 {
+			body += "\t" + string(line.Inner) + "\n"
+		}
+	}
+	return
 }
