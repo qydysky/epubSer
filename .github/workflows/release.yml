@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        go: [ '1.25' ]
+        go: [ '1.26' ]
     env:
       GH_TOKEN: ${{ github.token }}
     steps:
@@ -42,7 +42,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        go: [ '1.25' ]
+        go: [ '1.26' ]
     env:
       GH_TOKEN: ${{ github.token }}
     steps:
@@ -77,7 +77,7 @@ jobs:
     runs-on: windows-latest
     strategy:
       matrix:
-        go: [ '1.25' ]
+        go: [ '1.26' ]
     env:
       GH_TOKEN: ${{ github.token }}
     steps:
@@ -114,7 +114,7 @@ jobs:
     runs-on: macos-latest
     strategy:
       matrix:
-        go: [ '1.25' ]
+        go: [ '1.26' ]
     env:
       GH_TOKEN: ${{ github.token }}
     steps:
