@@ -16,17 +16,17 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        go: [ '1.25' ]
+        go: [ '1.26' ]
     env:
       GH_TOKEN: ${{ github.token }}
     steps:
     - name: Set up Go${{ matrix.go }}
-      uses: actions/setup-go@v5
+      uses: actions/setup-go@v6
       with:
         go-version: ${{ matrix.go }}
 
     - name: Check out code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
       with:
         lfs: true
 
@@ -42,17 +42,17 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        go: [ '1.25' ]
+        go: [ '1.26' ]
     env:
       GH_TOKEN: ${{ github.token }}
     steps:
     - name: Set up Go${{ matrix.go }}
-      uses: actions/setup-go@v5
+      uses: actions/setup-go@v6
       with:
         go-version: ${{ matrix.go }}
 
     - name: Check out code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
       with:
         lfs: true
 
@@ -77,17 +77,17 @@ jobs:
     runs-on: windows-latest
     strategy:
       matrix:
-        go: [ '1.25' ]
+        go: [ '1.26' ]
     env:
       GH_TOKEN: ${{ github.token }}
     steps:
     - name: Set up Go${{ matrix.go }}
-      uses: actions/setup-go@v5
+      uses: actions/setup-go@v6
       with:
         go-version: ${{ matrix.go }}
 
     - name: Check out code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
       with:
         lfs: true
 
@@ -114,17 +114,17 @@ jobs:
     runs-on: macos-latest
     strategy:
       matrix:
-        go: [ '1.25' ]
+        go: [ '1.26' ]
     env:
       GH_TOKEN: ${{ github.token }}
     steps:
     - name: Set up Go${{ matrix.go }}
-      uses: actions/setup-go@v5
+      uses: actions/setup-go@v6
       with:
         go-version: ${{ matrix.go }}
 
     - name: Check out code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
       with:
         lfs: true
 

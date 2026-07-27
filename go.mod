@@ -1,12 +1,14 @@
 module github.com/qydysky/epubSer
 
-go 1.25.4
+go 1.26
 
-require github.com/qydysky/part v0.28.20260104194352
+require (
+	github.com/dustin/go-humanize v1.0.1
+	github.com/qydysky/part v0.28.20260722185429
+)
 
 require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
-	github.com/dustin/go-humanize v1.0.1 // indirect
 	github.com/go-ole/go-ole v1.3.0 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/klauspost/compress v1.18.2 // indirect

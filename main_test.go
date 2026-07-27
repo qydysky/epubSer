@@ -21,3 +21,11 @@ func Test1(t *testing.T) {
 	t.Log(e)
 	t.Log(opf)
 }
+
+func Test2(t *testing.T) {
+	type Chapter []any
+	var c Chapter
+	e := xml.NewDecoder(pf.Open("test2.xml")).Decode(&c)
+	t.Log(e)
+	t.Log(c)
+}
